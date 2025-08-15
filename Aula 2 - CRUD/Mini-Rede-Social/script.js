@@ -18,3 +18,14 @@ let posts = [
         date: "12/10/2023 12:00:00"
     }
 ];
+
+
+const pessoa = {
+    nome: "Guilherme",
+    idade: 27,
+    Tags: [],
+    "Jogos Zerados": [],
+    isAdmin: true
+}
+
+console.log(pessoa.nome)
