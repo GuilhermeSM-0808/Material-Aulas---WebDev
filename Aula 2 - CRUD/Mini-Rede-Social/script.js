@@ -33,11 +33,27 @@ let posts = [
 // console.log(pessoa["Jogos Zerados"])
 
 window.onload = function(){
+    carregarPosts();
     mostrarPosts();
 
-    document.querySelector("#postForm").addEventListener("submit", addPost)
+    document.querySelector("#postForm").addEventListener("submit", addPost);
+    document.querySelector('#postList').addEventListener('click', handleClick);
 }
 
+function handleClick(infosDoEvento){
+    //console.log(infosDoEvento.target);
+    const action = infosDoEvento.target.dataset.action;
+    const index = infosDoEvento.target.dataset.index;
+
+    if(action === "Editar"){
+        //console.log(`Editou o item de index: ${index}`)
+        editarPosts(index);
+    }
+    else if(action === "Apagar"){
+        //console.log(`Apagou o item de index: ${index}`)
+        apagarPosts(index);
+    }
+}
 
 //CRUD
 
@@ -64,12 +80,13 @@ function addPost(infosDoEvento){
 }
 // R.ead
 function mostrarPosts(){
+    salvarPosts();
     //Pegando o elemento do HTML onde os tweets serão inseridos
     const listaPosts = document.querySelector("#postList");
     listaPosts.innerHTML = "";
     
     //Passando pela lista criando um elemento
-    posts.forEach( pegaItem => {
+    posts.forEach( (pegaItem, index) => {
         const cardPost = document.createElement("div");
         cardPost.classList.add("card");
 
@@ -79,13 +96,38 @@ function mostrarPosts(){
             <p>Categoria: ${pegaItem.category}</p>
             <p>Data e Hora: ${pegaItem.date}</p>
 
-            <button>Editar</button>
-            <button>Apagar</button>
+            <button data-action="Editar" data-index="${index}">Editar</button>
+            <button data-action="Apagar" data-index="${index}">Apagar</button>
         `
         listaPosts.append(cardPost);
     })
 }
 // U.padte
-function editarPosts(){}
+function editarPosts(index){
+    const inputTexto = prompt("Edite o conteudo do post: ", posts[index].text );
+    posts[index].text = inputTexto;
+
+    mostrarPosts();
+}
 // D.elete
-function deletarPosts(){}
+function apagarPosts(index){
+    const confirmar = confirm("Voce deseja realmente, seriamente, deletar o post?")
+
+    if(confirmar){
+        posts.splice(index, 1);
+        mostrarPosts();
+    }
+
+}
+
+
+function salvarPosts(){
+    localStorage.setItem("posts", JSON.stringify(posts));
+}
+
+function carregarPosts(){
+    const postsGuardados = localStorage.getItem("posts");
+    if(postsGuardados){
+        posts = JSON.parse(postsGuardados)
+    }
+}
